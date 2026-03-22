@@ -1,0 +1,13 @@
+{
+  "model": "RandomForest",
+  "accuracy": 0.971,
+  "features": [
+    "student",
+    "balance",
+    "income",
+    "debt_income_ratio",
+    "is_debt_gt_income"
+  ],
+  "target": "default",
+  "rule": "balance > income => default = 1"
+}
