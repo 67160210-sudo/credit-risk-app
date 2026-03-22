@@ -1,5 +1,5 @@
 # ==========================================
-# CREDIT RISK APP (AUTO TRAIN VERSION)
+# CREDIT RISK APP (FIX PATH VERSION)
 # ==========================================
 
 import streamlit as st
@@ -24,25 +24,30 @@ st.set_page_config(
 )
 
 # -------------------------------
-# Paths
+# Paths (🔥 แก้ตรงนี้)
 # -------------------------------
 BASE_DIR = os.path.dirname(__file__)
-MODEL_PATH = os.path.join(BASE_DIR, "model_artifacts", "model.pkl")
-FEATURE_PATH = os.path.join(BASE_DIR, "model_artifacts", "features.json")
+
+MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
+FEATURE_PATH = os.path.join(BASE_DIR, "features.json")
 DATA_PATH = os.path.join(BASE_DIR, "credit_default_risk.csv")
 
 
 # -------------------------------
-# Auto Train if no model
+# Load or Train
 # -------------------------------
 @st.cache_resource
 def load_or_train():
+
+    # ✅ ถ้ามี model อยู่แล้ว → โหลดเลย
     if os.path.exists(MODEL_PATH) and os.path.exists(FEATURE_PATH):
         model = joblib.load(MODEL_PATH)
         with open(FEATURE_PATH) as f:
             features = json.load(f)
+
         return model, features
 
+    # ❗ ถ้าไม่มี → train ใหม่
     st.warning("⚠️ ไม่พบโมเดล → กำลัง train ใหม่...")
 
     df = pd.read_csv(DATA_PATH)
@@ -72,8 +77,7 @@ def load_or_train():
 
     model.fit(X_train, y_train)
 
-    # save
-    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+    # save (🔥 จะ save ไว้ root ตามไฟล์คุณ)
     joblib.dump(model, MODEL_PATH)
 
     with open(FEATURE_PATH, "w") as f:
@@ -168,4 +172,4 @@ if st.button("🔮 ทำนายความเสี่ยง"):
 # Footer
 # -------------------------------
 st.divider()
-st.caption("🔥 Auto ML + Business Rule | Built with Streamlit")
+st.caption("🔥 Fixed Path Version | Ready to Deploy")
